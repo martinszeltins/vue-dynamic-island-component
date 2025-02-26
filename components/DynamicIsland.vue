@@ -33,6 +33,9 @@
     const showCollapsedContent = ref(true)
     const showExpandedContent = ref(false)
     
+    // Flag to track if the island is transitioning
+    const isTransitioning = ref(false)
+    
     // Get background color based on type
     const getBackgroundColor = (type: string) => {
         switch (type) {
@@ -96,6 +99,10 @@
     
     // Function to expand the island with sequential animation
     const expandIsland = () => {
+        if (isTransitioning.value) return // Prevent triggering during transition
+        
+        isTransitioning.value = true // Set transitioning flag
+        
         // Set hovered state to true
         setHovered(true)
         
@@ -111,13 +118,20 @@
                 // Step 3: After container expands, fade in the expanded content
                 setTimeout(() => {
                     showExpandedContent.value = true
+                    isTransitioning.value = false // Reset transitioning flag
                 }, 300) // Wait for expansion to complete
             }, 200) // Wait for fade out to complete
+        } else {
+            isTransitioning.value = false // Reset transitioning flag if no expanded content
         }
     }
     
     // Function to collapse the island with sequential animation
     const collapseIsland = () => {
+        if (isTransitioning.value) return // Prevent triggering during transition
+        
+        isTransitioning.value = true // Set transitioning flag
+        
         // Set hovered state to false
         setHovered(false)
         
@@ -131,6 +145,7 @@
             // Step 3: After container collapses, fade in the collapsed content
             setTimeout(() => {
                 showCollapsedContent.value = true
+                isTransitioning.value = false // Reset transitioning flag
             }, 300) // Wait for collapse to complete
         }, 200) // Wait for fade out to complete
     }
