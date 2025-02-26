@@ -1,13 +1,25 @@
+interface DynamicIslandOptions {
+    collapsedContent: Component
+    expandedContent: Component
+}
+
 export const useDynamicIsland = () => {
     const { dynamicIsland } = storeToRefs(useAppStore())
 
-    const showDynamicIsland = (options) => {
+    const showDynamicIsland = (options: DynamicIslandOptions) => {
         dynamicIsland.value.isVisible = true
-        dynamicIsland.value.collapsedContent = options.collapsedContent
-        dynamicIsland.value.expandedContent = options.expandedContent
+        dynamicIsland.value.collapsedContent = markRaw(options.collapsedContent)
+        dynamicIsland.value.expandedContent = markRaw(options.expandedContent)
+    }
+
+    const hideDynamicIsland = () => {
+        dynamicIsland.value.isExpanded = false
+
+        setTimeout(() => dynamicIsland.value.isVisible = false, 1000)
     }
 
     return {
-        showDynamicIsland
+        showDynamicIsland,
+        hideDynamicIsland
     }
 }
