@@ -48,7 +48,8 @@
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
-            type: 'default'
+            type: 'default',
+            hideAfter: 5000000 // 5 seconds
         })
     }
     

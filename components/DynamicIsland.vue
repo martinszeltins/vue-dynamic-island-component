@@ -6,18 +6,21 @@
         @mouseenter="expandIsland"
         @mouseleave="collapseIsland">
 
-        <!-- Content Container (with fade effect) -->
-        <div :class="['dynamic-island-content-container transition-opacity duration-200', 
-                     {'opacity-0': !dynamicIsland.contentVisible, 'opacity-100': dynamicIsland.contentVisible}]">
-            <!-- Collapsed Content -->
-            <div v-if="!dynamicIsland.isExpanded" class="w-full">
-                <component :is="dynamicIsland.collapsedContent" />
-            </div>
+        <!-- Collapsed Content -->
+        <div 
+            class="transition-opacity duration-200 px-1"
+            :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
+            v-show="showCollapsedContent && dynamicIsland.contentVisible">
+            <component :is="dynamicIsland.collapsedContent" />
+        </div>
 
-            <!-- Expanded Content -->
-            <div v-else-if="dynamicIsland.expandedContent" class="w-full">
-                <component :is="dynamicIsland.expandedContent" />
-            </div>
+        <!-- Expanded Content -->
+        <div 
+            v-if="dynamicIsland.expandedContent"
+            class="transition-opacity duration-200 px-1"
+            :class="{'opacity-0': !showExpandedContent, 'opacity-100': showExpandedContent}"
+            v-show="showExpandedContent && dynamicIsland.contentVisible">
+            <component :is="dynamicIsland.expandedContent" />
         </div>
     </div>
 </template>
@@ -25,6 +28,10 @@
 <script setup lang="ts">
     const { dynamicIsland } = storeToRefs(useAppStore())
     const { setHovered } = useDynamicIsland()
+    
+    // Refs to control content visibility
+    const showCollapsedContent = ref(true)
+    const showExpandedContent = ref(false)
     
     // Get background color based on type
     const getBackgroundColor = (type: string) => {
@@ -41,7 +48,7 @@
     const dynamicIslandStyle = computed(() => {
         const style = {
             padding: dynamicIsland.value.contentVisible ? '0.5rem' : '0',
-            transition: 'width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out, padding 0.3s ease-out, background-color 0.3s ease, box-shadow 0.3s ease',
+            transition: 'width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease',
             backgroundColor: getBackgroundColor(dynamicIsland.value.type),
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 30px rgba(0, 0, 0, 0.12)' // Soft, layered shadow
         }
@@ -65,11 +72,11 @@
                     style.width = 'var(--dynamic-island-expanded-width)'
                     style.height = 'auto'
                     style.minHeight = 'var(--dynamic-island-collapsed-height)'
-                    style.borderRadius = 'var(--dynamic-island-border-radius-xl)'
+                    style.borderRadius = '0.75rem'
                 } else {
                     style.width = 'var(--dynamic-island-collapsed-width)'
                     style.height = 'var(--dynamic-island-collapsed-height)'
-                    style.borderRadius = '9999px' // This ensures a smooth transition to full rounded
+                    style.borderRadius = '999px'
                 }
                 break
             case 'shrinking':
@@ -87,23 +94,62 @@
         return style
     })
     
+    // Function to expand the island with sequential animation
     const expandIsland = () => {
         // Set hovered state to true
         setHovered(true)
         
         // Only expand if we have expanded content
         if (dynamicIsland.value.expandedContent) {
-            dynamicIsland.value.isExpanded = true
+            // Step 1: Fade out the collapsed content
+            showCollapsedContent.value = false
+            
+            // Step 2: After content fades out, expand the container
+            setTimeout(() => {
+                dynamicIsland.value.isExpanded = true
+                
+                // Step 3: After container expands, fade in the expanded content
+                setTimeout(() => {
+                    showExpandedContent.value = true
+                }, 300) // Wait for expansion to complete
+            }, 200) // Wait for fade out to complete
         }
     }
     
+    // Function to collapse the island with sequential animation
     const collapseIsland = () => {
         // Set hovered state to false
         setHovered(false)
         
-        // Collapse island
-        dynamicIsland.value.isExpanded = false
+        // Step 1: Fade out the expanded content
+        showExpandedContent.value = false
+        
+        // Step 2: After content fades out, collapse the container
+        setTimeout(() => {
+            dynamicIsland.value.isExpanded = false
+            
+            // Step 3: After container collapses, fade in the collapsed content
+            setTimeout(() => {
+                showCollapsedContent.value = true
+            }, 300) // Wait for collapse to complete
+        }, 200) // Wait for fade out to complete
     }
+    
+    // Reset content visibility when the dynamic island appears or disappears
+    watch(() => dynamicIsland.value.isVisible, (isVisible) => {
+        if (isVisible) {
+            showCollapsedContent.value = true
+            showExpandedContent.value = false
+        }
+    })
+    
+    // Reset content visibility when expanded state changes programmatically
+    watch(() => dynamicIsland.value.isExpanded, (isExpanded) => {
+        if (!isExpanded) {
+            showCollapsedContent.value = true
+            showExpandedContent.value = false
+        }
+    })
 </script>
 
 <style scoped>
@@ -114,24 +160,9 @@
     --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
     --dynamic-island-circle-size: 2.5rem;
     --dynamic-island-dot-size: 0.5rem;
-    --dynamic-island-border-radius-full: 9999px;
-    --dynamic-island-border-radius-xl: 0.75rem;
     
     cursor: default;
-    /* Set specific transitions for each property for more control */
-    transition-property: width, height, border-radius, padding, background-color;
-    transition-duration: 0.3s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Use a smooth standard easing curve */
-}
-
-/* Content container styles - ensures content is centered */
-.dynamic-island-content-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.2s ease; /* Faster fade transition */
+    overflow: hidden;
 }
 
 /* Animation for shake */
