@@ -1,16 +1,13 @@
 <template>
     <div 
         v-if="dynamicIsland.isVisible" 
-        class="dynamic-island fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-white transition-all duration-300"
-        :class="[
-            dynamicIslandClasses,
-            {'p-2': dynamicIsland.contentVisible}
-        ]"
+        class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white"
+        :style="dynamicIslandStyle"
         @mouseenter="expandIsland"
         @mouseleave="collapseIsland">
 
         <!-- Content Container (with fade effect) -->
-        <div :class="['content-container transition-opacity duration-200', 
+        <div :class="['dynamic-island-content-container transition-opacity duration-200', 
                      {'opacity-0': !dynamicIsland.contentVisible, 'opacity-100': dynamicIsland.contentVisible}]">
             <!-- Collapsed Content -->
             <div v-if="!dynamicIsland.isExpanded" class="w-full">
@@ -29,41 +26,65 @@
     const { dynamicIsland } = storeToRefs(useAppStore())
     const { setHovered } = useDynamicIsland()
     
-    const dynamicIslandClasses = computed(() => {
-        const classes = []
+    // Get background color based on type
+    const getBackgroundColor = (type: string) => {
+        switch (type) {
+            case 'success': return '#10B981' // green-500
+            case 'warning': return '#F59E0B' // amber-500
+            case 'danger': return '#EF4444'  // red-500
+            case 'info': return '#3B82F6'    // blue-500
+            default: return '#000000'        // black
+        }
+    }
+    
+    // Create style object with dynamic properties for smoother transitions
+    const dynamicIslandStyle = computed(() => {
+        const style = {
+            padding: dynamicIsland.value.contentVisible ? '0.5rem' : '0',
+            transition: 'width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out, padding 0.3s ease-out, background-color 0.3s ease, box-shadow 0.3s ease',
+            backgroundColor: getBackgroundColor(dynamicIsland.value.type),
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 30px rgba(0, 0, 0, 0.12)' // Soft, layered shadow
+        }
         
-        // Animation states based on the current phase
+        // Set dimensions and border-radius based on state
         switch (dynamicIsland.value.animationState) {
             case 'tiny-dot':
-                classes.push('tiny-dot rounded-full')
+                style.width = 'var(--dynamic-island-dot-size)'
+                style.height = 'var(--dynamic-island-dot-size)'
+                style.borderRadius = '50%'
                 break
             case 'circle':
-                classes.push('circle rounded-full')
+                style.width = 'var(--dynamic-island-circle-size)'
+                style.height = 'var(--dynamic-island-circle-size)'
+                style.borderRadius = '50%'
                 break
             case 'sized':
             case 'content-visible':
             case 'content-hiding':
-                // Shape based on expanded state
                 if (dynamicIsland.value.isExpanded) {
-                    classes.push('expanded rounded-xl')
+                    style.width = 'var(--dynamic-island-expanded-width)'
+                    style.height = 'auto'
+                    style.minHeight = 'var(--dynamic-island-collapsed-height)'
+                    style.borderRadius = 'var(--dynamic-island-border-radius-xl)'
                 } else {
-                    classes.push('collapsed rounded-full')
+                    style.width = 'var(--dynamic-island-collapsed-width)'
+                    style.height = 'var(--dynamic-island-collapsed-height)'
+                    style.borderRadius = '9999px' // This ensures a smooth transition to full rounded
                 }
                 break
             case 'shrinking':
-                classes.push('circle rounded-full')
+                style.width = 'var(--dynamic-island-circle-size)'
+                style.height = 'var(--dynamic-island-circle-size)'
+                style.borderRadius = '50%'
                 break
             case 'disappearing':
-                classes.push('tiny-dot rounded-full')
+                style.width = 'var(--dynamic-island-dot-size)'
+                style.height = 'var(--dynamic-island-dot-size)'
+                style.borderRadius = '50%'
                 break
         }
         
-        // Add shake class if needed
-        if (dynamicIsland.value.shake && dynamicIsland.value.animationState === 'content-visible') {
-            classes.push('shake-ready')
-        }
-        
-        return classes
+        return style
     })
     
     const expandIsland = () => {
@@ -86,62 +107,39 @@
 </script>
 
 <style scoped>
-.dynamic-island {
+.dynamic-island-component {
     /* Using CSS variables for configuration */
-    --collapsed-width: 13rem; /* 52 / 4 = 13rem */
-    --collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
-    --expanded-width: 20rem; /* 80 / 4 = 20rem */
-    --circle-size: 2.5rem;
-    --dot-size: 0.5rem;
+    --dynamic-island-collapsed-width: 13rem; /* 52 / 4 = 13rem */
+    --dynamic-island-collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
+    --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
+    --dynamic-island-circle-size: 2.5rem;
+    --dynamic-island-dot-size: 0.5rem;
+    --dynamic-island-border-radius-full: 9999px;
+    --dynamic-island-border-radius-xl: 0.75rem;
     
     cursor: default;
-    /* Set common transition properties - slower transitions */
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Slight bounce effect with longer duration */
+    /* Set specific transitions for each property for more control */
+    transition-property: width, height, border-radius, padding, background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Use a smooth standard easing curve */
 }
 
 /* Content container styles - ensures content is centered */
-.content-container {
+.dynamic-island-content-container {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.4s ease; /* Slower fade transition */
-}
-
-/* Size states */
-.tiny-dot {
-    width: var(--dot-size);
-    height: var(--dot-size);
-    padding: 0;
-    overflow: hidden;
-}
-
-.circle {
-    width: var(--circle-size);
-    height: var(--circle-size);
-    padding: 0;
-    overflow: hidden;
-}
-
-.collapsed {
-    width: var(--collapsed-width);
-    height: var(--collapsed-height);
-    overflow: hidden;
-}
-
-.expanded {
-    width: var(--expanded-width);
-    height: auto;
-    min-height: var(--collapsed-height);
+    transition: opacity 0.2s ease; /* Faster fade transition */
 }
 
 /* Animation for shake */
-.shake-animation {
-    animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both; /* Longer shake duration */
+.dynamic-island-shake-animation {
+    animation: dynamic-island-shake 0.8s cubic-bezier(.36,.07,.19,.97) both; /* Longer shake duration */
 }
 
-@keyframes shake {
+@keyframes dynamic-island-shake {
     10%, 90% {
         transform: translateX(-50%) translate3d(-3px, 0, 0); /* Increased amplitude */
     }

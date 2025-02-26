@@ -3,6 +3,7 @@ interface DynamicIslandOptions {
     expandedContent?: Component
     hideAfter?: number
     shake?: boolean
+    type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
 }
 
 export const useDynamicIsland = () => {
@@ -67,6 +68,9 @@ export const useDynamicIsland = () => {
         // Set shake effect if requested
         dynamicIsland.value.shake = options.shake || false
         
+        // Set the notification type (default is 'default')
+        dynamicIsland.value.type = options.type || 'default'
+        
         // Set content
         dynamicIsland.value.collapsedContent = markRaw(options.collapsedContent)
         dynamicIsland.value.expandedContent = options.expandedContent ? markRaw(options.expandedContent) : null
@@ -89,11 +93,11 @@ export const useDynamicIsland = () => {
                     if (dynamicIsland.value.shake) {
                         // Wait for content to be visible before shaking
                         setTimeout(() => {
-                            const element = document.querySelector('.dynamic-island') as HTMLElement
+                            const element = document.querySelector('.dynamic-island-component') as HTMLElement
                             if (element) {
-                                element.classList.add('shake-animation')
+                                element.classList.add('dynamic-island-shake-animation')
                                 setTimeout(() => {
-                                    element.classList.remove('shake-animation')
+                                    element.classList.remove('dynamic-island-shake-animation')
                                 }, 800) // Increased shake duration
                             }
                         }, 100)

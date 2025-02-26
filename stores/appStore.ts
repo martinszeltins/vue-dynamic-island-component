@@ -10,6 +10,7 @@ interface DynamicIslandState {
     animationState: 'hidden' | 'tiny-dot' | 'circle' | 'sized' | 'content-visible' | 'content-hiding' | 'shrinking' | 'disappearing'
     contentVisible: boolean
     isHovered: boolean
+    type: 'default' | 'success' | 'warning' | 'danger' | 'info'
 }
 
 export const useAppStore = defineStore('app', () => {
@@ -24,7 +25,8 @@ export const useAppStore = defineStore('app', () => {
         shake: false,
         animationState: 'hidden',
         contentVisible: false,
-        isHovered: false
+        isHovered: false,
+        type: 'default'
     })
 
     return {

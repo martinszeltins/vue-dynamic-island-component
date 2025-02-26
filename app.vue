@@ -2,21 +2,37 @@
     <div>
         <DynamicIsland></DynamicIsland>
 
-        <div class="flex space-x-4 p-4">
-            <button @click="showPrintingNotification" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Show printing notification
+        <div class="flex flex-wrap gap-4 p-4">
+            <button @click="showPrintingNotification" class="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                Default Notification
             </button>
             
-            <button @click="showShakingNotification" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Show shaking notification
+            <button @click="showSuccessNotification" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Success Notification
             </button>
             
-            <button @click="showLongDurationNotification" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                Show 10s notification
+            <button @click="showWarningNotification" class="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded">
+                Warning Notification
+            </button>
+            
+            <button @click="showDangerNotification" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Danger Notification
+            </button>
+            
+            <button @click="showInfoNotification" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Info Notification
+            </button>
+            
+            <button @click="showShakingNotification" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                Shaking Notification
+            </button>
+            
+            <button @click="showLongDurationNotification" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                10s Notification
             </button>
             
             <button @click="showCollapsedOnlyNotification" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                Show collapsed-only notification
+                Collapsed-only Notification
             </button>
         </div>
     </div>
@@ -31,7 +47,40 @@
     const showPrintingNotification = () => {
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
-            expandedContent: ExpandedPrintingNotificationContent
+            expandedContent: ExpandedPrintingNotificationContent,
+            type: 'default'
+        })
+    }
+    
+    const showSuccessNotification = () => {
+        showDynamicIsland({
+            collapsedContent: CollapsedPrintingNotificationContent,
+            expandedContent: ExpandedPrintingNotificationContent,
+            type: 'success'
+        })
+    }
+    
+    const showWarningNotification = () => {
+        showDynamicIsland({
+            collapsedContent: CollapsedPrintingNotificationContent,
+            expandedContent: ExpandedPrintingNotificationContent,
+            type: 'warning'
+        })
+    }
+    
+    const showDangerNotification = () => {
+        showDynamicIsland({
+            collapsedContent: CollapsedPrintingNotificationContent,
+            expandedContent: ExpandedPrintingNotificationContent,
+            type: 'danger'
+        })
+    }
+    
+    const showInfoNotification = () => {
+        showDynamicIsland({
+            collapsedContent: CollapsedPrintingNotificationContent,
+            expandedContent: ExpandedPrintingNotificationContent,
+            type: 'info'
         })
     }
     
@@ -39,7 +88,8 @@
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
-            shake: true
+            shake: true,
+            type: 'warning'
         })
     }
     
@@ -47,14 +97,16 @@
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
-            hideAfter: 6000 // 6 seconds
+            hideAfter: 10000, // 10 seconds
+            type: 'info'
         })
     }
     
     const showCollapsedOnlyNotification = () => {
         showDynamicIsland({
-            collapsedContent: CollapsedPrintingNotificationContent
+            collapsedContent: CollapsedPrintingNotificationContent,
             // No expanded content
+            type: 'success'
         })
     }
 </script>
