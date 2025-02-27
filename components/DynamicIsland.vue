@@ -2,6 +2,7 @@
     <div 
         v-if="dynamicIsland.isVisible" 
         class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white"
+        :class="{ 'dynamic-island-pulse-transition': dynamicIsland.pulseType }"
         :style="dynamicIslandStyle"
         @mouseenter="expandIsland"
         @mouseleave="collapseIsland">
@@ -11,17 +12,19 @@
             class="transition-opacity duration-200 px-1"
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
-
-            <!-- Component content -->
-            <component
-                v-if="isCollapsedComponent"
-                :is="dynamicIsland.collapsedContent"
-            />
             
-            <!-- Text content with optional icon -->
-            <div v-else class="flex items-center">
-                <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
-                <span>{{ dynamicIsland.collapsedContent }}</span>
+            <div class="dynamic-island-content-wrapper">
+                <!-- Component content -->
+                <component
+                    v-if="isCollapsedComponent"
+                    :is="dynamicIsland.collapsedContent"
+                />
+                
+                <!-- Text content with optional icon -->
+                <div v-else class="flex items-center">
+                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                    <span>{{ dynamicIsland.collapsedContent }}</span>
+                </div>
             </div>
         </div>
 
@@ -71,19 +74,39 @@
         switch (type) {
             case 'success': return '#10B981' 
             case 'warning': return '#F59E0B' 
-            case 'danger': return '#EF4444'  
+            case 'danger': return '#c53232'  
             case 'info': return '#3B82F6'    
             default: return '#000000'        
         }
     }
     
+    // Calculate the collapsed width based on custom value or default
+    const calculatedCollapsedWidth = computed(() => {
+        return dynamicIsland.value.collapsedWidth 
+            ? `${dynamicIsland.value.collapsedWidth}px` 
+            : 'var(--dynamic-island-collapsed-width)'
+    })
+    
+    // Calculate the expanded width based on custom value or default
+    const calculatedExpandedWidth = computed(() => {
+        return dynamicIsland.value.expandedWidth 
+            ? `${dynamicIsland.value.expandedWidth}px` 
+            : 'var(--dynamic-island-expanded-width)'
+    })
+    
     // Create style object with dynamic properties for smoother transitions
     const dynamicIslandStyle = computed(() => {
-        const style = {
+        const style: Record<string, string> = {
             padding: dynamicIsland.value.contentVisible ? '0.5rem' : '0',
             transition: 'width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease',
-            backgroundColor: getBackgroundColor(dynamicIsland.value.type),
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 30px rgba(0, 0, 0, 0.12)' // Soft, layered shadow
+        }
+        
+        // Set background color based on type
+        if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
+            style.backgroundColor = getBackgroundColor(dynamicIsland.value.type)
+        } else {
+            style.backgroundColor = '#000000' // Default black
         }
         
         // Set dimensions and border-radius based on state
@@ -102,12 +125,12 @@
             case 'content-visible':
             case 'content-hiding':
                 if (dynamicIsland.value.isExpanded) {
-                    style.width = 'var(--dynamic-island-expanded-width)'
+                    style.width = calculatedExpandedWidth.value
                     style.height = 'auto'
                     style.minHeight = 'var(--dynamic-island-collapsed-height)'
                     style.borderRadius = '0.75rem'
                 } else {
-                    style.width = 'var(--dynamic-island-collapsed-width)'
+                    style.width = calculatedCollapsedWidth.value
                     style.height = 'var(--dynamic-island-collapsed-height)'
                     style.borderRadius = '999px'
                 }
@@ -208,6 +231,30 @@
         
         cursor: default;
         overflow: hidden;
+    }
+    
+    /* Wrapper for the collapsed content with text overflow handling */
+    .dynamic-island-content-wrapper {
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+    }
+    
+    /* Fade-out effect for overflowing content */
+    .dynamic-island-content-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+        pointer-events: none;
+    }
+
+    /* Animation for pulse transition */
+    .dynamic-island-pulse-transition {
+        transition: background-color 1s ease;
     }
 
     /* Animation for shake */

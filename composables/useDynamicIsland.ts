@@ -5,6 +5,9 @@ interface DynamicIslandOptions {
     hideAfter?: number
     shake?: boolean
     type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
+    collapsedWidth?: number
+    expandedWidth?: number
+    pulseType?: boolean
 }
 
 export const useDynamicIsland = () => {
@@ -71,6 +74,13 @@ export const useDynamicIsland = () => {
         
         // Set the notification type (default is 'default')
         dynamicIsland.value.type = options.type || 'default'
+        
+        // Set custom widths if provided
+        dynamicIsland.value.collapsedWidth = options.collapsedWidth || null
+        dynamicIsland.value.expandedWidth = options.expandedWidth || null
+        
+        // Set pulse type
+        dynamicIsland.value.pulseType = options.pulseType || false
         
         // Set content
         dynamicIsland.value.collapsedContent = typeof options.collapsedContent === 'string' 

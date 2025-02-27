@@ -20,7 +20,7 @@
             </button>
             
             <button @click="showDangerNotification" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                Danger Notification
+                Danger Notification (width, pulse)
             </button>
             
             <button @click="showInfoNotification" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -77,7 +77,10 @@
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
-            type: 'danger'
+            collapsedWidth: 250,
+            expandedWidth: 500,
+            pulseType: true,
+            type: 'danger',
         })
     }
     
