@@ -11,8 +11,12 @@
             class="transition-opacity duration-200 px-1"
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
+
             <!-- Component content -->
-            <component v-if="isCollapsedComponent" :is="dynamicIsland.collapsedContent" />
+            <component
+                v-if="isCollapsedComponent"
+                :is="dynamicIsland.collapsedContent"
+            />
             
             <!-- Text content with optional icon -->
             <div v-else class="flex items-center">
@@ -27,8 +31,12 @@
             class="transition-opacity duration-200 px-1"
             :class="{'opacity-0': !showExpandedContent, 'opacity-100': showExpandedContent}"
             v-show="showExpandedContent && dynamicIsland.contentVisible">
+
             <!-- Component content -->
-            <component v-if="isExpandedComponent" :is="dynamicIsland.expandedContent" />
+            <component
+                v-if="isExpandedComponent"
+                :is="dynamicIsland.expandedContent"
+            />
             
             <!-- Text content with optional icon -->
             <div v-else class="p-2">
@@ -42,14 +50,12 @@
 </template>
 
 <script setup lang="ts">
-    const { dynamicIsland } = storeToRefs(useAppStore())
     const { setHovered } = useDynamicIsland()
+    const { dynamicIsland } = storeToRefs(useAppStore())
     
-    // Refs to control content visibility
     const showCollapsedContent = ref(true)
     const showExpandedContent = ref(false)
     
-    // Flag to track if the island is transitioning
     const isTransitioning = ref(false)
     
     // Computed properties to check if content is a component or text
@@ -61,14 +67,13 @@
         return typeof dynamicIsland.value.expandedContent !== 'string'
     })
     
-    // Get background color based on type
     const getBackgroundColor = (type: string) => {
         switch (type) {
-            case 'success': return '#10B981' // green-500
-            case 'warning': return '#F59E0B' // amber-500
-            case 'danger': return '#EF4444'  // red-500
-            case 'info': return '#3B82F6'    // blue-500
-            default: return '#000000'        // black
+            case 'success': return '#10B981' 
+            case 'warning': return '#F59E0B' 
+            case 'danger': return '#EF4444'  
+            case 'info': return '#3B82F6'    
+            default: return '#000000'        
         }
     }
     
@@ -126,9 +131,8 @@
     const expandIsland = () => {
         if (isTransitioning.value) return // Prevent triggering during transition
         
-        isTransitioning.value = true // Set transitioning flag
+        isTransitioning.value = true
         
-        // Set hovered state to true
         setHovered(true)
         
         // Only expand if we have expanded content
@@ -193,38 +197,39 @@
 </script>
 
 <style scoped>
-.dynamic-island-component {
-    /* Using CSS variables for configuration */
-    --dynamic-island-collapsed-width: 13rem; /* 52 / 4 = 13rem */
-    --dynamic-island-collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
-    --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
-    --dynamic-island-circle-size: 2.5rem;
-    --dynamic-island-dot-size: 0.5rem;
-    
-    cursor: default;
-    overflow: hidden;
-}
-
-/* Animation for shake */
-.dynamic-island-shake-animation {
-    animation: dynamic-island-shake 0.8s cubic-bezier(.36,.07,.19,.97) both; /* Longer shake duration */
-}
-
-@keyframes dynamic-island-shake {
-    10%, 90% {
-        transform: translateX(-50%) translate3d(-3px, 0, 0); /* Increased amplitude */
-    }
-    
-    20%, 80% {
-        transform: translateX(-50%) translate3d(6px, 0, 0); /* Increased amplitude */
+    /* All custom css classes are prefixed with `dynamic-island-` */
+    .dynamic-island-component {
+        /* Using CSS variables for configuration */
+        --dynamic-island-collapsed-width: 13rem; /* 52 / 4 = 13rem */
+        --dynamic-island-collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
+        --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
+        --dynamic-island-circle-size: 2.5rem;
+        --dynamic-island-dot-size: 0.5rem;
+        
+        cursor: default;
+        overflow: hidden;
     }
 
-    30%, 50%, 70% {
-        transform: translateX(-50%) translate3d(-9px, 0, 0); /* Increased amplitude */
+    /* Animation for shake */
+    .dynamic-island-shake-animation {
+        animation: dynamic-island-shake 0.8s cubic-bezier(.36,.07,.19,.97) both; /* Longer shake duration */
     }
 
-    40%, 60% {
-        transform: translateX(-50%) translate3d(9px, 0, 0); /* Increased amplitude */
+    @keyframes dynamic-island-shake {
+        10%, 90% {
+            transform: translateX(-50%) translate3d(-3px, 0, 0); /* Increased amplitude */
+        }
+        
+        20%, 80% {
+            transform: translateX(-50%) translate3d(6px, 0, 0); /* Increased amplitude */
+        }
+
+        30%, 50%, 70% {
+            transform: translateX(-50%) translate3d(-9px, 0, 0); /* Increased amplitude */
+        }
+
+        40%, 60% {
+            transform: translateX(-50%) translate3d(9px, 0, 0); /* Increased amplitude */
+        }
     }
-}
 </style>

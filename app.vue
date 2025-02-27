@@ -115,6 +115,11 @@
         })
     }
 
+    /**
+     * When we don't want to use components for collapsedContent and expandedContent,
+     * then we also have the option to use simple text for collapsedContent and expandedContent
+     * and we can also provide an icon.
+     */
     const showSimpleTextNotification = () => {
         showDynamicIsland({
             collapsedContent: 'Printing',
