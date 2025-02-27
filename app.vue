@@ -94,7 +94,8 @@
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
             shake: true,
-            type: 'warning'
+            hideAfter: 6000,
+            type: 'danger'
         })
     }
     

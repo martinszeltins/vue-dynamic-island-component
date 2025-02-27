@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center justify-between">
-        <div>Printing...</div>
+        <div>Printing a lot of documents because they are all very important...</div>
         
         <button
             @click="cancelPrinting"
