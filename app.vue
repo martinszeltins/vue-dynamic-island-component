@@ -3,6 +3,10 @@
         <DynamicIsland></DynamicIsland>
 
         <div class="flex flex-wrap gap-4 p-4">
+            <button @click="showSimpleTextNotification" class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded">
+                Simple Text Notification
+            </button>
+
             <button @click="showPrintingNotification" class="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                 Default Notification
             </button>
@@ -108,6 +112,14 @@
             collapsedContent: CollapsedPrintingNotificationContent,
             // No expanded content
             type: 'success'
+        })
+    }
+
+    const showSimpleTextNotification = () => {
+        showDynamicIsland({
+            collapsedContent: 'Printing',
+            expandedContent: 'Printing document: papers-2000.pdf',
+            icon: 'fa-print',
         })
     }
 </script>

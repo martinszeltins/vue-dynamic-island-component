@@ -11,7 +11,14 @@
             class="transition-opacity duration-200 px-1"
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
-            <component :is="dynamicIsland.collapsedContent" />
+            <!-- Component content -->
+            <component v-if="isCollapsedComponent" :is="dynamicIsland.collapsedContent" />
+            
+            <!-- Text content with optional icon -->
+            <div v-else class="flex items-center">
+                <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                <span>{{ dynamicIsland.collapsedContent }}</span>
+            </div>
         </div>
 
         <!-- Expanded Content -->
@@ -20,7 +27,16 @@
             class="transition-opacity duration-200 px-1"
             :class="{'opacity-0': !showExpandedContent, 'opacity-100': showExpandedContent}"
             v-show="showExpandedContent && dynamicIsland.contentVisible">
-            <component :is="dynamicIsland.expandedContent" />
+            <!-- Component content -->
+            <component v-if="isExpandedComponent" :is="dynamicIsland.expandedContent" />
+            
+            <!-- Text content with optional icon -->
+            <div v-else class="p-2">
+                <div class="flex items-center">
+                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                    <span>{{ dynamicIsland.expandedContent }}</span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -35,6 +51,15 @@
     
     // Flag to track if the island is transitioning
     const isTransitioning = ref(false)
+    
+    // Computed properties to check if content is a component or text
+    const isCollapsedComponent = computed(() => {
+        return typeof dynamicIsland.value.collapsedContent !== 'string'
+    })
+    
+    const isExpandedComponent = computed(() => {
+        return typeof dynamicIsland.value.expandedContent !== 'string'
+    })
     
     // Get background color based on type
     const getBackgroundColor = (type: string) => {

@@ -1,6 +1,7 @@
 interface DynamicIslandOptions {
-    collapsedContent: Component
-    expandedContent?: Component
+    collapsedContent: Component | string
+    expandedContent?: Component | string
+    icon?: string
     hideAfter?: number
     shake?: boolean
     type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
@@ -72,8 +73,18 @@ export const useDynamicIsland = () => {
         dynamicIsland.value.type = options.type || 'default'
         
         // Set content
-        dynamicIsland.value.collapsedContent = markRaw(options.collapsedContent)
-        dynamicIsland.value.expandedContent = options.expandedContent ? markRaw(options.expandedContent) : null
+        dynamicIsland.value.collapsedContent = typeof options.collapsedContent === 'string' 
+            ? options.collapsedContent 
+            : markRaw(options.collapsedContent)
+        
+        dynamicIsland.value.expandedContent = options.expandedContent 
+            ? (typeof options.expandedContent === 'string' 
+                ? options.expandedContent 
+                : markRaw(options.expandedContent)) 
+            : null
+        
+        // Set icon if provided
+        dynamicIsland.value.icon = options.icon || null
 
         // Animation sequence with precise timing
         setTimeout(() => {

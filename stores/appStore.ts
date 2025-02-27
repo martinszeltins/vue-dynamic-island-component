@@ -1,8 +1,9 @@
 interface DynamicIslandState {
     isVisible: boolean
     isExpanded: boolean
-    collapsedContent: Component | null
-    expandedContent: Component | null
+    collapsedContent: Component | string | null
+    expandedContent: Component | string | null
+    icon: string | null
     hideTimer: number | null
     hideTimerDuration: number | null
     hideTimerStart: number | null
@@ -19,6 +20,7 @@ export const useAppStore = defineStore('app', () => {
         isExpanded: false,
         collapsedContent: null,
         expandedContent: null,
+        icon: null,
         hideTimer: null,
         hideTimerDuration: null,
         hideTimerStart: null,
