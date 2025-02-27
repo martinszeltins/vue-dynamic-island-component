@@ -88,6 +88,7 @@
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
             expandedContent: ExpandedPrintingNotificationContent,
+            pulseType: true,
             type: 'info'
         })
     }
@@ -98,6 +99,7 @@
             expandedContent: ExpandedPrintingNotificationContent,
             shake: true,
             hideAfter: 6000,
+            pulseType: true,
             type: 'danger'
         })
     }
@@ -126,9 +128,11 @@
      */
     const showSimpleTextNotification = () => {
         showDynamicIsland({
-            collapsedContent: 'Printing',
+            collapsedContent: 'Printing...',
             expandedContent: 'Printing document: papers-2000.pdf',
-            icon: 'fa-print',
+            hideAfter: 7000,
+            collapsedWidth: 150,
+            icon: 'fa-solid fa-info-circle',
         })
     }
 </script>

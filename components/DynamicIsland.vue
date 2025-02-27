@@ -1,7 +1,7 @@
 <template>
     <div 
         v-if="dynamicIsland.isVisible" 
-        class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white"
+        class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white backdrop-blur"
         :class="{ 'dynamic-island-pulse-transition': dynamicIsland.pulseType }"
         :style="dynamicIslandStyle"
         @mouseenter="expandIsland"
@@ -13,7 +13,7 @@
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
             
-            <div class="dynamic-island-content-wrapper" :style="{'--fade-gradient': `linear-gradient(to right, rgba(0, 0, 0, 0), ${currentBackgroundColor})`}">
+            <div class="dynamic-island-content-wrapper">
                 <!-- Component content -->
                 <component
                     v-if="isCollapsedComponent"
@@ -21,9 +21,9 @@
                 />
                 
                 <!-- Text content with optional icon -->
-                <div v-else class="flex items-center">
-                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                <div v-else class="flex items-center justify-between">
                     <span>{{ dynamicIsland.collapsedContent }}</span>
+                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
                 </div>
             </div>
         </div>
@@ -72,11 +72,11 @@
     
     const getBackgroundColor = (type: string) => {
         switch (type) {
-            case 'success': return '#10B981' 
-            case 'warning': return '#F59E0B' 
-            case 'danger': return '#EF4444'  
-            case 'info': return '#3B82F6'    
-            default: return '#000000'        
+            case 'success': return 'rgba(16, 185, 129, 0.9)' 
+            case 'warning': return 'rgba(245, 158, 11, 0.9)' 
+            case 'danger': return 'rgba(199, 29, 29, 0.9)'  
+            case 'info': return 'rgba(59, 130, 246, 0.9)'    
+            default: return 'rgba(0, 0, 0, 0.75)'
         }
     }
     
@@ -94,23 +94,6 @@
             : 'var(--dynamic-island-expanded-width)'
     })
     
-    // Get the current background color based on the state
-    const currentBackgroundColor = computed(() => {
-        if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
-            return getBackgroundColor(dynamicIsland.value.type)
-        } else {
-            return '#000000' // Default black
-        }
-    })
-    
-    // Create the fade gradient based on the current background color
-    const fadeGradientStyle = computed(() => {
-        const color = currentBackgroundColor.value
-        return {
-            background: `linear-gradient(to right, rgba(0, 0, 0, 0), ${color})`
-        }
-    })
-    
     // Create style object with dynamic properties for smoother transitions
     const dynamicIslandStyle = computed(() => {
         const style: Record<string, string> = {
@@ -120,7 +103,11 @@
         }
         
         // Set background color based on type
-        style.backgroundColor = currentBackgroundColor.value
+        if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
+            style.backgroundColor = getBackgroundColor(dynamicIsland.value.type)
+        } else {
+            style.backgroundColor = 'rgba(0, 0, 0, 0.8)' // Default black
+        }
         
         // Set dimensions and border-radius based on state
         switch (dynamicIsland.value.animationState) {
@@ -236,7 +223,7 @@
     /* All custom css classes are prefixed with `dynamic-island-` */
     .dynamic-island-component {
         /* Using CSS variables for configuration */
-        --dynamic-island-collapsed-width: 13rem; /* 52 / 4 = 13rem */
+        --dynamic-island-collapsed-width: 15rem; /* 52 / 4 = 13rem */
         --dynamic-island-collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
         --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
         --dynamic-island-circle-size: 2.5rem;
@@ -251,18 +238,13 @@
         overflow: hidden;
         white-space: nowrap;
         position: relative;
+        mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
     }
     
-    /* Fade-out effect for overflowing content */
+    /* Remove the after element since we're using mask instead */
     .dynamic-island-content-wrapper::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 30px;
-        height: 100%;
-        background: var(--fade-gradient);
-        pointer-events: none;
+        display: none;
     }
 
     /* Animation for pulse transition */
