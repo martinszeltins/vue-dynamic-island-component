@@ -128,10 +128,10 @@
      */
     const showSimpleTextNotification = () => {
         showDynamicIsland({
-            collapsedContent: 'Printing...',
+            collapsedContent: 'DevTools triggered',
             expandedContent: 'Printing document: papers-2000.pdf',
-            hideAfter: 7000,
-            collapsedWidth: 150,
+            hideAfter: 2500,
+            collapsedWidth: 220,
             icon: 'fa-solid fa-info-circle',
         })
     }
