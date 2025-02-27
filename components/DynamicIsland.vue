@@ -13,7 +13,7 @@
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
             
-            <div class="dynamic-island-content-wrapper">
+            <div class="dynamic-island-content-wrapper" :style="{'--fade-gradient': `linear-gradient(to right, rgba(0, 0, 0, 0), ${currentBackgroundColor})`}">
                 <!-- Component content -->
                 <component
                     v-if="isCollapsedComponent"
@@ -74,7 +74,7 @@
         switch (type) {
             case 'success': return '#10B981' 
             case 'warning': return '#F59E0B' 
-            case 'danger': return '#c53232'  
+            case 'danger': return '#EF4444'  
             case 'info': return '#3B82F6'    
             default: return '#000000'        
         }
@@ -94,6 +94,23 @@
             : 'var(--dynamic-island-expanded-width)'
     })
     
+    // Get the current background color based on the state
+    const currentBackgroundColor = computed(() => {
+        if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
+            return getBackgroundColor(dynamicIsland.value.type)
+        } else {
+            return '#000000' // Default black
+        }
+    })
+    
+    // Create the fade gradient based on the current background color
+    const fadeGradientStyle = computed(() => {
+        const color = currentBackgroundColor.value
+        return {
+            background: `linear-gradient(to right, rgba(0, 0, 0, 0), ${color})`
+        }
+    })
+    
     // Create style object with dynamic properties for smoother transitions
     const dynamicIslandStyle = computed(() => {
         const style: Record<string, string> = {
@@ -103,11 +120,7 @@
         }
         
         // Set background color based on type
-        if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
-            style.backgroundColor = getBackgroundColor(dynamicIsland.value.type)
-        } else {
-            style.backgroundColor = '#000000' // Default black
-        }
+        style.backgroundColor = currentBackgroundColor.value
         
         // Set dimensions and border-radius based on state
         switch (dynamicIsland.value.animationState) {
@@ -248,7 +261,7 @@
         right: 0;
         width: 30px;
         height: 100%;
-        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+        background: var(--fade-gradient);
         pointer-events: none;
     }
 
