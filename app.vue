@@ -4,7 +4,7 @@
 
         <div class="flex flex-wrap gap-4 p-4">
             <button @click="showSimpleTextNotification" class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded">
-                Simple Text Notification
+                Show Printing...
             </button>
 
             <button @click="showPrintingNotification" class="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -55,7 +55,7 @@
             expandedContent: ExpandedPrintingNotificationContent,
             expandedProps: { title: 'Expanded title' },
             type: 'default',
-            hideAfter: 5000
+            hideAfter: 5000000
         })
     }
     
@@ -130,14 +130,14 @@
      */
     const showSimpleTextNotification = () => {
         showDynamicIsland({
-            collapsedContent: 'DevTools triggered, testing longer content here',
-            expandedContent: 'Printing document: papers-2000.pdf',
-            hideAfter: 2500,
-            collapsedWidth: 320,
+            collapsedContent: 'Printing...',
+            hideAfter: 2000,
+            collapsedWidth: 220,
             collapsedContentWidth: 200,
             collapsedTextClasses: 'text-center',
-            iconLeft: 'fa-solid fa-info-circle',
-            iconRight: 'fa-solid fa-info-circle',
+            iconRightClasses: 'fa-spin',
+            iconLeft: 'fa-solid fa-print',
+            iconRight: 'fa-solid fa-spinner',
         })
     }
 </script>

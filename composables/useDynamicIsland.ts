@@ -2,7 +2,9 @@ interface DynamicIslandOptions {
     collapsedContent: Component | string
     expandedContent?: Component | string
     iconLeft?: string
+    iconLeftClasses?: string
     iconRight?: string
+    iconRightClasses?: string
     collapsedTextClasses?: string,
     hideAfter?: number
     shake?: boolean
@@ -104,6 +106,8 @@ export const useDynamicIsland = () => {
 
         // Set icon if provided
         dynamicIsland.value.iconRight = options.iconRight || null
+        dynamicIsland.value.iconRightClasses = options.iconRightClasses || null
+        dynamicIsland.value.iconLeftClasses = options.iconLeftClasses || null
         dynamicIsland.value.iconLeft = options.iconLeft || null
         dynamicIsland.value.collapsedTextClasses = options.collapsedTextClasses || null
 
@@ -159,25 +163,28 @@ export const useDynamicIsland = () => {
         // Start hide animation sequence
         // Step 1: Hide content with fade out
         dynamicIsland.value.animationState = 'content-hiding'
-        dynamicIsland.value.contentVisible = false
         
         setTimeout(() => {
-            // Step 2: Shrink to circle
-            dynamicIsland.value.animationState = 'shrinking'
+            dynamicIsland.value.contentVisible = false
             
             setTimeout(() => {
-                // Step 3: Scale down to disappear
-                dynamicIsland.value.animationState = 'disappearing'
+                // Step 2: Shrink to circle
+                dynamicIsland.value.animationState = 'shrinking'
                 
-                // Finally hide the element
                 setTimeout(() => {
-                    dynamicIsland.value.isVisible = false
-                    dynamicIsland.value.animationState = 'hidden'
-                    dynamicIsland.value.shake = false
-                    dynamicIsland.value.isHovered = false
-                }, 400) // Slower disappearing
-            }, 300) // Slower shrinking
-        }, 300) // Slower content hiding
+                    // Step 3: Scale down to disappear
+                    dynamicIsland.value.animationState = 'disappearing'
+                    
+                    // Finally hide the element
+                    setTimeout(() => {
+                        dynamicIsland.value.isVisible = false
+                        dynamicIsland.value.animationState = 'hidden'
+                        dynamicIsland.value.shake = false
+                        dynamicIsland.value.isHovered = false
+                    }, 400) // Slower disappearing
+                }, 300) // Slower shrinking
+            }, 300) // Slower content hiding
+        }, 200)
     }
 
     // Set hover state to true and pause timer

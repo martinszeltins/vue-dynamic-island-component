@@ -20,6 +20,8 @@ interface DynamicIslandState {
     pulseType: boolean
     collapsedProps: Record<string, any> | null
     expandedProps: Record<string, any> | null
+    iconLeftClasses: string | null
+    iconRightClasses: string | null
 }
 
 export const useAppStore = defineStore('app', () => {
@@ -44,7 +46,9 @@ export const useAppStore = defineStore('app', () => {
         pulseType: false,
         collapsedProps: null,
         collapsedContentWidth: null,
-        expandedProps: null
+        expandedProps: null,
+        iconLeftClasses: null,
+        iconRightClasses: null,
     })
 
     return {

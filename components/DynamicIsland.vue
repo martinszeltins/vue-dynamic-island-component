@@ -10,8 +10,10 @@
         <!-- Collapsed Content -->
         <div 
             class="transition-opacity duration-200 px-1"
-            :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
-            v-show="showCollapsedContent && dynamicIsland.contentVisible">
+            :class="{
+                'hidden': showExpandedContent,
+                'opacity-0': !(showCollapsedContent && dynamicIsland.contentVisible),
+                'opacity-100': showCollapsedContent && dynamicIsland.contentVisible}">
             
             <div>
                 <!-- Component content -->
@@ -22,17 +24,33 @@
                 />
                 
                 <!-- Text content with optional icon -->
-                <div v-else class="flex items-center justify-between">
-                    <i v-if="dynamicIsland.iconLeft" :class="dynamicIsland.iconLeft" class="mr-2"></i>
+                <div
+                    v-else
+                    class="flex items-center justify-between transition-all duration-300"
+                    :class="{
+                        'opacity-0': dynamicIsland.animationState !== 'content-visible',
+                        'opacity-100': dynamicIsland.animationState === 'content-visible'
+                    }">
+
+                    <i
+                        v-if="dynamicIsland.iconLeft"
+                        :class="[dynamicIsland.iconLeft, dynamicIsland.iconLeftClasses]"
+                        class="mr-2">
+                    </i>
 
                     <div
                         class="dynamic-island-content-wrapper w-[155px]"
+                        :class="dynamicIsland.collapsedTextClasses"
                         :style="{ width: dynamicIsland.collapsedContentWidth + 'px' }">
 
                         <span >{{ dynamicIsland.collapsedContent }}</span>
                     </div>
 
-                    <i v-if="dynamicIsland.iconRight" :class="dynamicIsland.iconRight" class="mr-2"></i>
+                    <i
+                        v-if="dynamicIsland.iconRight"
+                        :class="[dynamicIsland.iconRight, dynamicIsland.iconRightClasses]"
+                        class="mr-2">
+                    </i>
                 </div>
             </div>
         </div>
