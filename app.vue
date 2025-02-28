@@ -51,9 +51,11 @@
     const showPrintingNotification = () => {
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
+            collapsedProps: { title: 'Collapsed title' },
             expandedContent: ExpandedPrintingNotificationContent,
+            expandedProps: { title: 'Expanded title' },
             type: 'default',
-            hideAfter: 5000 // 5 seconds
+            hideAfter: 5000
         })
     }
     
@@ -128,11 +130,14 @@
      */
     const showSimpleTextNotification = () => {
         showDynamicIsland({
-            collapsedContent: 'DevTools triggered',
+            collapsedContent: 'DevTools triggered, testing longer content here',
             expandedContent: 'Printing document: papers-2000.pdf',
             hideAfter: 2500,
-            collapsedWidth: 220,
-            icon: 'fa-solid fa-info-circle',
+            collapsedWidth: 320,
+            collapsedContentWidth: 200,
+            collapsedTextClasses: 'text-center',
+            iconLeft: 'fa-solid fa-info-circle',
+            iconRight: 'fa-solid fa-info-circle',
         })
     }
 </script>

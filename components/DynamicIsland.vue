@@ -13,17 +13,26 @@
             :class="{'opacity-0': !showCollapsedContent, 'opacity-100': showCollapsedContent}"
             v-show="showCollapsedContent && dynamicIsland.contentVisible">
             
-            <div class="dynamic-island-content-wrapper">
+            <div>
                 <!-- Component content -->
                 <component
                     v-if="isCollapsedComponent"
                     :is="dynamicIsland.collapsedContent"
+                    v-bind="dynamicIsland.collapsedProps"
                 />
                 
                 <!-- Text content with optional icon -->
                 <div v-else class="flex items-center justify-between">
-                    <span>{{ dynamicIsland.collapsedContent }}</span>
-                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                    <i v-if="dynamicIsland.iconLeft" :class="dynamicIsland.iconLeft" class="mr-2"></i>
+
+                    <div
+                        class="dynamic-island-content-wrapper w-[155px]"
+                        :style="{ width: dynamicIsland.collapsedContentWidth + 'px' }">
+
+                        <span >{{ dynamicIsland.collapsedContent }}</span>
+                    </div>
+
+                    <i v-if="dynamicIsland.iconRight" :class="dynamicIsland.iconRight" class="mr-2"></i>
                 </div>
             </div>
         </div>
@@ -39,13 +48,15 @@
             <component
                 v-if="isExpandedComponent"
                 :is="dynamicIsland.expandedContent"
+                v-bind="dynamicIsland.expandedProps"
             />
             
             <!-- Text content with optional icon -->
             <div v-else class="p-2">
                 <div class="flex items-center">
-                    <i v-if="dynamicIsland.icon" :class="dynamicIsland.icon" class="mr-2"></i>
+                    <i v-if="dynamicIsland.iconLeft" :class="dynamicIsland.iconLeft" class="mr-2"></i>
                     <span>{{ dynamicIsland.expandedContent }}</span>
+                    <i v-if="dynamicIsland.iconRight" :class="dynamicIsland.iconRight" class="mr-2"></i>
                 </div>
             </div>
         </div>

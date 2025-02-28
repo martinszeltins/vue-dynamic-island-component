@@ -1,13 +1,18 @@
 interface DynamicIslandOptions {
     collapsedContent: Component | string
     expandedContent?: Component | string
-    icon?: string
+    iconLeft?: string
+    iconRight?: string
+    collapsedTextClasses?: string,
     hideAfter?: number
     shake?: boolean
     type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
     collapsedWidth?: number
     expandedWidth?: number
+    collapsedContentWidth?: number
     pulseType?: boolean
+    collapsedProps?: Record<string, any>
+    expandedProps?: Record<string, any>
 }
 
 export const useDynamicIsland = () => {
@@ -68,68 +73,73 @@ export const useDynamicIsland = () => {
         dynamicIsland.value.contentVisible = false
         dynamicIsland.value.isExpanded = false
         dynamicIsland.value.isHovered = false
-        
+
         // Set shake effect if requested
         dynamicIsland.value.shake = options.shake || false
-        
+
         // Set the notification type (default is 'default')
         dynamicIsland.value.type = options.type || 'default'
-        
+
         // Set custom widths if provided
         dynamicIsland.value.collapsedWidth = options.collapsedWidth || null
         dynamicIsland.value.expandedWidth = options.expandedWidth || null
-        
+        dynamicIsland.value.collapsedContentWidth = options.collapsedContentWidth || null
+
         // Set pulse type
         dynamicIsland.value.pulseType = options.pulseType || false
-        
-        // Set content
+
+        // Set content and props
         dynamicIsland.value.collapsedContent = typeof options.collapsedContent === 'string' 
             ? options.collapsedContent 
             : markRaw(options.collapsedContent)
-        
         dynamicIsland.value.expandedContent = options.expandedContent 
             ? (typeof options.expandedContent === 'string' 
                 ? options.expandedContent 
                 : markRaw(options.expandedContent)) 
             : null
-        
+
+        // Set the component props
+        dynamicIsland.value.collapsedProps = options.collapsedProps || null
+        dynamicIsland.value.expandedProps = options.expandedProps || null
+
         // Set icon if provided
-        dynamicIsland.value.icon = options.icon || null
+        dynamicIsland.value.iconRight = options.iconRight || null
+        dynamicIsland.value.iconLeft = options.iconLeft || null
+        dynamicIsland.value.collapsedTextClasses = options.collapsedTextClasses || null
 
         // Animation sequence with precise timing
         setTimeout(() => {
             // Step 1: Grow to circle
             dynamicIsland.value.animationState = 'circle'
-            
+
             setTimeout(() => {
                 // Step 2: Expand to full size
                 dynamicIsland.value.animationState = 'sized'
-                
+
                 setTimeout(() => {
                     // Step 3: Fade in content
                     dynamicIsland.value.animationState = 'content-visible'
                     dynamicIsland.value.contentVisible = true
-                    
+
                     // Apply shake effect if enabled (after content is visible)
                     if (dynamicIsland.value.shake) {
-                        // Wait for content to be visible before shaking
                         setTimeout(() => {
                             const element = document.querySelector('.dynamic-island-component') as HTMLElement
                             if (element) {
                                 element.classList.add('dynamic-island-shake-animation')
                                 setTimeout(() => {
                                     element.classList.remove('dynamic-island-shake-animation')
-                                }, 800) // Increased shake duration
+                                }, 800)
                             }
                         }, 100)
                     }
-                }, 300) // Slower transition
-            }, 300) // Slower transition
+                }, 300)
+            }, 300)
         }, 30)
 
         // Set hide timer if specified or use default of 5 seconds
         const hideAfter = options.hideAfter !== undefined ? options.hideAfter : 5000
-        
+
         if (hideAfter > 0) {
             setupHideTimer(hideAfter)
         }

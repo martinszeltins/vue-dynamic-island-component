@@ -3,7 +3,9 @@ interface DynamicIslandState {
     isExpanded: boolean
     collapsedContent: Component | string | null
     expandedContent: Component | string | null
-    icon: string | null
+    iconRight: string | null
+    iconLeft: string | null
+    collapsedTextClasses: string | null
     hideTimer: number | null
     hideTimerDuration: number | null
     hideTimerStart: number | null
@@ -14,7 +16,10 @@ interface DynamicIslandState {
     type: 'default' | 'success' | 'warning' | 'danger' | 'info'
     collapsedWidth: number | null
     expandedWidth: number | null
+    collapsedContentWidth: number | null
     pulseType: boolean
+    collapsedProps: Record<string, any> | null
+    expandedProps: Record<string, any> | null
 }
 
 export const useAppStore = defineStore('app', () => {
@@ -23,7 +28,9 @@ export const useAppStore = defineStore('app', () => {
         isExpanded: false,
         collapsedContent: null,
         expandedContent: null,
-        icon: null,
+        iconRight: null,
+        iconLeft: null,
+        collapsedTextClasses: null,
         hideTimer: null,
         hideTimerDuration: null,
         hideTimerStart: null,
@@ -34,7 +41,10 @@ export const useAppStore = defineStore('app', () => {
         type: 'default',
         collapsedWidth: null,
         expandedWidth: null,
-        pulseType: false
+        pulseType: false,
+        collapsedProps: null,
+        collapsedContentWidth: null,
+        expandedProps: null
     })
 
     return {
