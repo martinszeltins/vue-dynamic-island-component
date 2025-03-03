@@ -41,6 +41,8 @@
 
             <div style="font-size: 16px; max-height:800px;overflow:auto;padding: 10px;background: #f8f8f8;border-radius: 4px;font-family: monospace;"><pre><b></b> {{ dynamicIsland }}</pre></div><br><br>
         </div>
+
+        <NewComponent />
     </div>
 </template>
 
@@ -48,8 +50,7 @@
     import CollapsedPrintingNotificationContent from './components/CollapsedPrintingNotificationContent.vue'
     import ExpandedPrintingNotificationContent from './components/ExpandedPrintingNotificationContent.vue'
 
-    const { showDynamicIsland } = useDynamicIsland()
-    const { dynamicIsland: storeDynamicIsland } = storeToRefs(useAppStore())
+    const { showDynamicIsland, dynamicIsland: storeDynamicIsland } = useDynamicIsland()
 
     const dynamicIsland = computed(() => {
         return { ...storeDynamicIsland.value, collapsedContent: '<Component>', expandedContent: '<Component>' }

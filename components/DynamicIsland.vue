@@ -86,15 +86,13 @@
 </template>
 
 <script setup lang="ts">
-    const { setHovered } = useDynamicIsland()
-    const { dynamicIsland } = storeToRefs(useAppStore())
+    const { setHovered, dynamicIsland } = useDynamicIsland()
     
     const showCollapsedContent = ref(true)
     const showExpandedContent = ref(false)
     
     const isTransitioning = ref(false)
     
-    // Computed properties to check if content is a component or text
     const isCollapsedComponent = computed(() => {
         return typeof dynamicIsland.value.collapsedContent !== 'string'
     })
@@ -113,36 +111,31 @@
         }
     }
     
-    // Calculate the collapsed width based on custom value or default
     const calculatedCollapsedWidth = computed(() => {
         return dynamicIsland.value.collapsedWidth 
             ? `${dynamicIsland.value.collapsedWidth}px` 
             : 'var(--dynamic-island-collapsed-width)'
     })
     
-    // Calculate the expanded width based on custom value or default
     const calculatedExpandedWidth = computed(() => {
         return dynamicIsland.value.expandedWidth 
             ? `${dynamicIsland.value.expandedWidth}px` 
             : 'var(--dynamic-island-expanded-width)'
     })
     
-    // Create style object with dynamic properties for smoother transitions
     const dynamicIslandStyle = computed(() => {
         const style: Record<string, string> = {
             padding: dynamicIsland.value.contentVisible ? '0.5rem' : '0',
             transition: 'width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 30px rgba(0, 0, 0, 0.12)' // Soft, layered shadow
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 30px rgba(0, 0, 0, 0.12)'
         }
         
-        // Set background color based on type
         if (dynamicIsland.value.pulseType && dynamicIsland.value.contentVisible) {
             style.backgroundColor = getBackgroundColor(dynamicIsland.value.type)
         } else {
-            style.backgroundColor = 'rgba(0, 0, 0, 0.8)' // Default black
+            style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
         }
         
-        // Set dimensions and border-radius based on state
         switch (dynamicIsland.value.animationState) {
             case 'tiny-dot':
                 style.width = 'var(--dynamic-island-dot-size)'
@@ -183,59 +176,48 @@
         return style
     })
     
-    // Function to expand the island with sequential animation
     const expandIsland = () => {
-        if (isTransitioning.value) return // Prevent triggering during transition
+        if (isTransitioning.value) return
         
         isTransitioning.value = true
         
         setHovered(true)
         
-        // Only expand if we have expanded content
         if (dynamicIsland.value.expandedContent) {
-            // Step 1: Fade out the collapsed content
             showCollapsedContent.value = false
             
-            // Step 2: After content fades out, expand the container
             setTimeout(() => {
                 dynamicIsland.value.isExpanded = true
                 
-                // Step 3: After container expands, fade in the expanded content
                 setTimeout(() => {
                     showExpandedContent.value = true
-                    isTransitioning.value = false // Reset transitioning flag
-                }, 300) // Wait for expansion to complete
-            }, 200) // Wait for fade out to complete
+                    isTransitioning.value = false
+                }, 300)
+            }, 200)
         } else {
-            isTransitioning.value = false // Reset transitioning flag if no expanded content
+            isTransitioning.value = false
         }
     }
     
-    // Function to collapse the island with sequential animation
     const collapseIsland = () => {
-        if (isTransitioning.value) return // Prevent triggering during transition
+        if (isTransitioning.value) return 
         
-        isTransitioning.value = true // Set transitioning flag
+        isTransitioning.value = true 
         
-        // Set hovered state to false
         setHovered(false)
         
-        // Step 1: Fade out the expanded content
         showExpandedContent.value = false
         
-        // Step 2: After content fades out, collapse the container
         setTimeout(() => {
             dynamicIsland.value.isExpanded = false
             
-            // Step 3: After container collapses, fade in the collapsed content
             setTimeout(() => {
                 showCollapsedContent.value = true
-                isTransitioning.value = false // Reset transitioning flag
-            }, 300) // Wait for collapse to complete
-        }, 200) // Wait for fade out to complete
+                isTransitioning.value = false
+            }, 300)
+        }, 200)
     }
     
-    // Reset content visibility when the dynamic island appears or disappears
     watch(() => dynamicIsland.value.isVisible, (isVisible) => {
         if (isVisible) {
             showCollapsedContent.value = true
@@ -243,7 +225,6 @@
         }
     })
     
-    // Reset content visibility when expanded state changes programmatically
     watch(() => dynamicIsland.value.isExpanded, (isExpanded) => {
         if (!isExpanded) {
             showCollapsedContent.value = true
@@ -253,12 +234,10 @@
 </script>
 
 <style>
-    /* All custom css classes are prefixed with `dynamic-island-` */
     .dynamic-island-component {
-        /* Using CSS variables for configuration */
-        --dynamic-island-collapsed-width: 15rem; /* 52 / 4 = 13rem */
-        --dynamic-island-collapsed-height: 2.6rem; /* 10 / 4 = 2.5rem */
-        --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
+        --dynamic-island-collapsed-width: 15rem;
+        --dynamic-island-collapsed-height: 2.6rem;
+        --dynamic-island-expanded-width: 20rem;
         --dynamic-island-circle-size: 2.5rem;
         --dynamic-island-dot-size: 0.5rem;
         
@@ -266,7 +245,6 @@
         overflow: hidden;
     }
     
-    /* Wrapper for the collapsed content with text overflow handling */
     .dynamic-island-content-wrapper {
         overflow: hidden;
         white-space: nowrap;
@@ -275,17 +253,14 @@
         -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
     }
     
-    /* Remove the after element since we're using mask instead */
     .dynamic-island-content-wrapper::after {
         display: none;
     }
 
-    /* Animation for pulse transition */
     .dynamic-island-pulse-transition {
         transition: background-color 1s ease;
     }
 
-    /* Animation for shake */
     .dynamic-island-shake-animation {
         animation: dynamic-island-shake 0.8s cubic-bezier(.36,.07,.19,.97) both; /* Longer shake duration */
     }

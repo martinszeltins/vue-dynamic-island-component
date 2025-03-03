@@ -22,8 +22,7 @@
         title?: string
     }>()
 
-    const { hideDynamicIsland } = useDynamicIsland()
-    const { dynamicIsland } = storeToRefs(useAppStore())
+    const { hideDynamicIsland, dynamicIsland } = useDynamicIsland()
 
     const cancelPrinting = () => {
         hideDynamicIsland()
