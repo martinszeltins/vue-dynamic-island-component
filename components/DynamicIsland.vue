@@ -1,7 +1,7 @@
 <template>
     <div 
         v-if="dynamicIsland.isVisible" 
-        class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white backdrop-blur"
+        class="dynamic-island-component fixed top-4 left-1/2 transform -translate-x-1/2 text-white backdrop-blur text-[17px]"
         :class="{ 'dynamic-island-pulse-transition': dynamicIsland.pulseType }"
         :style="dynamicIslandStyle"
         @mouseenter="expandIsland"
@@ -20,6 +20,10 @@
                 <component
                     v-if="isCollapsedComponent"
                     :is="dynamicIsland.collapsedContent"
+                    :class="{
+                        'opacity-0': dynamicIsland.animationState !== 'content-visible',
+                        'opacity-100': dynamicIsland.animationState === 'content-visible'
+                    }"
                     v-bind="dynamicIsland.collapsedProps"
                 />
                 
@@ -39,7 +43,7 @@
                     </i>
 
                     <div
-                        class="dynamic-island-content-wrapper w-[155px]"
+                        class="dynamic-island-content-wrapper"
                         :class="dynamicIsland.collapsedTextClasses"
                         :style="{ width: dynamicIsland.collapsedContentWidth + 'px' }">
 
@@ -248,12 +252,12 @@
     })
 </script>
 
-<style scoped>
+<style>
     /* All custom css classes are prefixed with `dynamic-island-` */
     .dynamic-island-component {
         /* Using CSS variables for configuration */
         --dynamic-island-collapsed-width: 15rem; /* 52 / 4 = 13rem */
-        --dynamic-island-collapsed-height: 2.5rem; /* 10 / 4 = 2.5rem */
+        --dynamic-island-collapsed-height: 2.6rem; /* 10 / 4 = 2.5rem */
         --dynamic-island-expanded-width: 20rem; /* 80 / 4 = 20rem */
         --dynamic-island-circle-size: 2.5rem;
         --dynamic-island-dot-size: 0.5rem;

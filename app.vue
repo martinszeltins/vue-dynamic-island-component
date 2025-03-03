@@ -51,11 +51,11 @@
     const showPrintingNotification = () => {
         showDynamicIsland({
             collapsedContent: CollapsedPrintingNotificationContent,
-            collapsedProps: { title: 'Collapsed title' },
+            collapsedProps: { title: 'Collapsed title goes here' },
             expandedContent: ExpandedPrintingNotificationContent,
             expandedProps: { title: 'Expanded title' },
+            collapsedContentWidth: 145,
             type: 'default',
-            hideAfter: 5000000
         })
     }
     
