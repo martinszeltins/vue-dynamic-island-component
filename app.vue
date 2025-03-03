@@ -38,6 +38,8 @@
             <button @click="showCollapsedOnlyNotification" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                 Collapsed-only Notification
             </button>
+
+            <div style="font-size: 16px; max-height:800px;overflow:auto;padding: 10px;background: #f8f8f8;border-radius: 4px;font-family: monospace;"><pre><b></b> {{ dynamicIsland }}</pre></div><br><br>
         </div>
     </div>
 </template>
@@ -47,6 +49,11 @@
     import ExpandedPrintingNotificationContent from './components/ExpandedPrintingNotificationContent.vue'
 
     const { showDynamicIsland } = useDynamicIsland()
+    const { dynamicIsland: storeDynamicIsland } = storeToRefs(useAppStore())
+
+    const dynamicIsland = computed(() => {
+        return { ...storeDynamicIsland.value, collapsedContent: '<Component>', expandedContent: '<Component>' }
+    })
 
     const showPrintingNotification = () => {
         showDynamicIsland({
